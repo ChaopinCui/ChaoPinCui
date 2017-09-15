@@ -22,6 +22,7 @@ class CreateCustomsTable extends Migration
             $table->integer('product_id')->comment('特色id');
             $table->string('name', 50)->comment('名称');
             $table->text('content')->comment('内容');
+            $table->integer('sort')->default(100)->comment('排序');
             $table->softDeletes();
             $table->timestamps();
         });

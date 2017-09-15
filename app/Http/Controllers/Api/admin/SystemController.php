@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Model\System;
+use IQuery;
 
 class SystemController extends Controller
 {

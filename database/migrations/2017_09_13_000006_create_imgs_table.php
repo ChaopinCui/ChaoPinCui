@@ -21,6 +21,8 @@ class CreateImgsTable extends Migration
             $table->increments('id');
             $table->integer('product_id')->comment('特色id');
             $table->string('name', 50)->comment('名称');
+            $table->string('desc', 255)->nullable()->comment('描述');
+            $table->integer('sort')->default(100)->comment('排序');
             $table->string('img', 50)->comment('原图');
             $table->string('thumb', 50)->comment('缩略图');
             $table->softDeletes();

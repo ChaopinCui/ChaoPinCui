@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class IQuery{
 
+    // 单张图片上传
 	public function upload($request, $filename, $isThumb=false)
 	{
         if ($request->hasFile($filename)) {
@@ -37,6 +38,25 @@ class IQuery{
 	        return $pic;//返回原图 缩略图 的路径 数组
         }
 	}
+
+    // 多图片异步上传
+    public function uploads($request, $filenames='imgs', $isThumb=false)
+    {         
+        $res = ['ps'=>'', 'ts'=>''];
+        $files = $request->file($pics);
+        if (!empty($files) && count($files) && is_array($files)) {
+            foreach ($files as $file) {
+                $data = $this->uploadOrs($file, $minState, $isThumb);
+                $imgs[] = $data['p'];
+                if ($isThumb) {
+                    $thumbs[] = $data['t'];
+                }
+            }
+            $res['ps'] = implode('|', $imgs);
+            if ($isThumb) $res['ts'] = implode('|', $thumbs);
+        }
+        return $res;
+    }
 
 	//生成缩略图
     public function img_create_small($big_img, $width, $height, $small_img) {  //原始大图地址，缩略图宽度，高度，缩略图地址

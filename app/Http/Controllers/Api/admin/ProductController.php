@@ -1,6 +1,6 @@
 <?php
 /**
- * controller: Category
+ * controller: Product
  * autoer: guosenlin
  * date: 2017/09/14
 */
@@ -10,28 +10,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use App\Model\Category;
+use App\Model\Product;
 use IQuery;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
 	// 分页信息
     public function index(Request $request)
     {
-    	$datas = Category::paginate(config('app.page'));
+    	$datas = Product::paginate(config('app.page'));
     	return response()->json($datas);
     }
 
     // 查看
     public function show($id)
     {
-    	return Category::find($id);
+    	return Product::find($id);
     }
 
     // 单条删除
     public function destroy($id)
     {
-    	$model = Category::find($id);
+    	$model = Product::find($id);
     	if ($model->destroy()) return $id;
     	return 0;
     }
@@ -39,7 +39,7 @@ class CategoryController extends Controller
     // 编辑
     public function edit($id)
     {
-    	return Category::find($id);
+    	return Product::find($id);
     }
 
     // 编辑保存
@@ -55,38 +55,32 @@ class CategoryController extends Controller
     }
 
     // 新建、编辑 保存方法
-    private function storeOrUpdate($request, $id=-1)
+    private function storeOrUpdate($request, $id = -1)
     {
-        $pid = $request->pid;
     	$this->validate($request, [
-            'name' => ['required','max:30',
-                Rule::unique('categories')->ignore($id)->where(function($query) use ($id, $pid) {
-                    if ($pid) {
-                        $query->whereNotNull('pid')->whereNull('deleted_at');
-                    } else {
-                        $query->whereNull('pid')->whereNull('deleted_at');
-                    }
+            'name' => ['required','max:50',
+                Rule::unique('products')->ignore($id)->where(function($query) use ($id, $pid) {
+                    $query->whereNull('deleted_at');
                 })
             ],
-            'desc' => 'nullable|max:255'
+            'category_id' => 'required|exists:categories',
+            'desc' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:100',
+            'meridian' => 'nullable|string|max:30',
+            'weft' => 'nullable|string|max:30'
         ]);
 
-        if (!empty($pid)) {
-            $this->validate($request, [
-                'pid' => 'required|max:30|exists:categories'
-            ]);
-        }
-
         if ($id == -1) {
-        	$model = new Category;
+        	$model = new Product;
         } else {
-        	$model = Category::find($id);
+        	$model = Product::find($id);
         }
 
-        $arr = ['name','desc','pid'];
+        $arr = ['name', 'desc', 'category_id', 'address', 'meridian', 'weft'];
         $model->setRawAttributes($request->only($arr));
-        $model->ico = IQuery::upload($request,'ico')['p'];
-        $model->img = IQuery::upload($request,'img')['p'];
+        $res = IQuery::upload($request,'img');
+        $model->img = $res['p'];
+        $model->thumb = $res['t'];
 
         if ($model->save()) return 1;
         return 0;

@@ -23,7 +23,7 @@ class CreateCommentsTable extends Migration
             $table->integer('user_id')->comment('用户id');
             $table->text('content')->comment('内容');
             $table->integer('level')->default(60)->comment('评分');
-            $table->string('img', 255)->nullable()->comment('原图 最多五张 用,隔开');
+            $table->string('img', 255)->nullable()->comment('原图 最多五张 用"|"隔开');
             $table->string('thumb', 255)->nullable()->comment('缩略图 最多五张');
             $table->softDeletes();
             $table->timestamps();

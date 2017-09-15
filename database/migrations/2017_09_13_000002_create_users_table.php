@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();  //记住密码标志，可为空
             $table->string('openid',50)->nullable()->comment('微信openid ');
             $table->tinyInteger('sex')->default(0)->comment('性别 默认0保密，1男，2女');
+            $table->tinyInteger('type')->default(0)->comment('用户类型 默认0普通用户，1管理员');
             $table->datetime('age')->nullable()->comment('出生年月日');
             $table->string('img', 50)->nullable()->comment('头像');
             $table->string('address', 100)->nullable()->comment('地址');
